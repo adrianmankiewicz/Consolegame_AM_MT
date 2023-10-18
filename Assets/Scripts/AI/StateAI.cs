@@ -84,6 +84,7 @@ public class AttackState : IEnemyState
 
     public void Update()
     {
+        enemyData.Agent.SetDestination(enemyData.Agent.transform.position);
         float distance = Vector3.Distance(enemyAI.transform.position, enemyData.Target.position);
         if (distance > minDistanceTarget)
         {
@@ -95,30 +96,33 @@ public class ChaseState : IEnemyState
 {
     private EnemyAI enemyAI;
     private EnemyData enemyData;
+    private AudioSource ambient;
     private float speedChase;
     private float minDistanceTarget;
     private float minDistanceTargetChase;
 
 
-    public ChaseState(EnemyAI ai, EnemyData enemyData, float speedChase, float minDistanceTarget, float minDistanceTargetChase)
+    public ChaseState(EnemyAI ai, EnemyData enemyData, float speedChase, float minDistanceTarget, float minDistanceTargetChase, AudioSource ambient)
     {
-        enemyAI = ai;
+        this.enemyAI = ai;
         this.enemyData = enemyData;
         this.speedChase = speedChase;
         this.minDistanceTarget = minDistanceTarget;
         this.minDistanceTargetChase = minDistanceTargetChase;
+        this.ambient = ambient;
     }
 
     public void Enter()
     {
         enemyData.AnimatorController.SetBool("IsRun", true);
         enemyData.Agent.speed = speedChase;
+        ambient.gameObject.SetActive(true);
     }
 
     public void Exit()
     {
         enemyData.AnimatorController.SetBool("IsRun", false);
-
+        ambient.gameObject.SetActive(false);
     }
 
     public void Update()

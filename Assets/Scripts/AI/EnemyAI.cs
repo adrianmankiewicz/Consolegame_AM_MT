@@ -13,6 +13,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] Transform target;
     [SerializeField] float minDistanceTargetChase;
     [SerializeField] float minDistanceTargetAttack;
+    [SerializeField] AudioSource ambient;
 
     public PatrolState PatrolState { get; private set; }
     public AttackState AttackState { get; private set; }
@@ -24,7 +25,7 @@ public class EnemyAI : MonoBehaviour
 
         PatrolState = new PatrolState(this, enemyData, points.PointsObject, 6, minDistanceTargetChase);
         AttackState = new AttackState(this, enemyData, minDistanceTargetAttack);
-        ChaseState = new ChaseState(this, enemyData, 8, minDistanceTargetAttack, minDistanceTargetChase);
+        ChaseState = new ChaseState(this, enemyData, 8, minDistanceTargetAttack, minDistanceTargetChase, ambient);
 
         ChangeState(PatrolState);
     }
