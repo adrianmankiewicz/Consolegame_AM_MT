@@ -9,8 +9,12 @@ public class FirstPersonMovement : MonoBehaviour
     [SerializeField] bool canRun = true;
     [SerializeField] float runSpeed = 9;
     [SerializeField] KeyCode runningKey = KeyCode.LeftShift;
-    [SerializeField] float maxStamina = 100;
-    [SerializeField] float substractStamina = .5f;
+    [SerializeField] float delayStamina = 0.5f;
+    [SerializeField] UnityEngine.UI.Slider staminaSlider;
+
+    private float stamina;
+    private float delayS;
+    private bool lockStamina = false;
     
 
     Rigidbody rigidbody;
@@ -26,7 +30,35 @@ public class FirstPersonMovement : MonoBehaviour
     {
         // Get the rigidbody on this.
         rigidbody = GetComponent<Rigidbody>();
-        InvokeRepeating(nameof(SubstractStamina), 1, 1);
+        stamina = 100;
+    }
+
+    private void Update()
+    {
+        staminaSlider.value = stamina;
+
+        if (delayS > Time.time)
+            return;
+        delayS = Time.time + delayStamina;
+
+        if (IsRunning)
+        {
+            if (stamina > 0)
+            {
+                stamina--;
+            }
+            if (stamina < 5)
+                lockStamina = true;
+        }
+        else if (stamina < 100)
+        {
+            stamina++;
+            if (lockStamina && stamina > 45)
+                lockStamina = false;
+        }
+
+        if (lockStamina)
+            IsRunning = false;
     }
 
     void FixedUpdate()
@@ -53,13 +85,11 @@ public class FirstPersonMovement : MonoBehaviour
     public void InputRun(InputAction.CallbackContext context)
     {
         // Update IsRunning from input.
-        IsRunning = canRun && context.performed;
-    }
-    private void SubstractStamina()
-    {
-        if (!IsRunning)
+        if(lockStamina)
+        {
+            IsRunning = false;
             return;
-
-        CurrentStamina -= substractStamina;
+        }
+        IsRunning = canRun && context.performed;
     }
 }

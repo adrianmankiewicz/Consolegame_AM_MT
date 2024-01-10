@@ -14,6 +14,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] float minDistanceTargetChase;
     [SerializeField] float minDistanceTargetAttack;
     [SerializeField] AudioSource ambient;
+    [SerializeField] float damage;
 
     public PatrolState PatrolState { get; private set; }
     public AttackState AttackState { get; private set; }
@@ -47,6 +48,11 @@ public class EnemyAI : MonoBehaviour
         {
             currentState.Update();
         }
+    }
+
+    public void ThrowDamage()
+    {
+        target.GetComponent<PlayerHealth>().GetDamage(damage);
     }
 }
 
